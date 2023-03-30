@@ -9,7 +9,17 @@ class QRReader:
             model_dir+"sr.prototxt",
             model_dir+"sr.caffemodel")
 
-    def read(self, img, n=3):
+    def read(self, img, n_list=[1, 2, 3]):
+        data_dict = {}
+        for n in n_list:
+            data, points = self._read(img, n=n)
+            for d, p in zip(data, points):
+                data_dict[d] = p
+
+        data_list = [(k, v) for k, v in data_dict.items()]
+        return list(zip(*data_list))
+
+    def _read(self, img, n=3):
         h, w, c = img.shape
         h1 = h // n
         w1 = w // n
